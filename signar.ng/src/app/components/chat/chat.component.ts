@@ -56,7 +56,14 @@ export class ChatComponent  {
           this.messages.push(message);
         });
 
+        this.hubConnection!.on('SendMessage', (message) => {
+          this.messages.push(message);
+        });
+
         // TODO: Écouter le message pour quitter un channel (lorsque le channel est effacé)
+        this.hubConnection!.on('ChannelList', (channel) => {
+          this.channelsList = channel;
+        });
       })
       .catch(err => console.log('Error while starting connection: ' + err))
   }
@@ -80,10 +87,12 @@ export class ChatComponent  {
 
   createChannel(){
     // TODO: Ajouter un invoke
+    this.hubConnection!.invoke("CreateChannel",this.newChannelName);
   }
 
   deleteChannel(channel: Channel){
     // TODO: Ajouter un invoke
+    this.hubConnection!.invoke("DeleteChannel",channel.id);
   }
 
   leaveChannel(){
